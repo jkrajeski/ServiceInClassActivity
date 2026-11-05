@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     val textView : TextView by lazy { findViewById(R.id.textView) }
 
+    //connects and disconnects service
     val serviceConnection = object: ServiceConnection {
         override fun onServiceConnected(
             name: ComponentName?,
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Transfers data to textview
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 TimerInfo.currentTime.collect {
@@ -54,6 +56,8 @@ class MainActivity : AppCompatActivity() {
             BIND_AUTO_CREATE
         )
 
+        //Start button
+        //changes state and text for green button
         findViewById<Button>(R.id.startButton).setOnClickListener {
             timerBinder?.run {
                 if (!isRunning) {
@@ -69,7 +73,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        
+
+        //Stop Button
         findViewById<Button>(R.id.stopButton).setOnClickListener {
             timerBinder?.stop()
             findViewById<Button>(R.id.startButton).text = "Start"

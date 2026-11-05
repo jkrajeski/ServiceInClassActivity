@@ -8,11 +8,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.widget.Button
+import android.widget.TextView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import kotlin.concurrent.timer
 
 class MainActivity : AppCompatActivity() {
 
     var timerBinder : TimerService.TimerBinder? = null
+
+    val textView : TextView by lazy { findViewById(R.id.textView) }
 
     val serviceConnection = object: ServiceConnection {
         override fun onServiceConnected(
@@ -34,6 +41,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                TimerInfo.currentTime.collect {
+                    textView.text = it.toString()
+                }
+            }
+        }
         bindService(
             Intent(this, TimerService::class.java),
             serviceConnection,
@@ -58,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         
         findViewById<Button>(R.id.stopButton).setOnClickListener {
             timerBinder?.stop()
+            findViewById<Button>(R.id.startButton).text = "Start"
         }
     }
 }

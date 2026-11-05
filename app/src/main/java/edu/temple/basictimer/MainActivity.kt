@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.widget.Button
+import kotlin.concurrent.timer
 
-const val TIMER_KEY = "timer_key"
 class MainActivity : AppCompatActivity() {
 
     var timerBinder : TimerService.TimerBinder? = null
@@ -41,7 +41,19 @@ class MainActivity : AppCompatActivity() {
         )
 
         findViewById<Button>(R.id.startButton).setOnClickListener {
-            timerBinder?.start(100)
+            timerBinder?.run {
+                if (!isRunning) {
+                    timerBinder?.start(100)
+                    (it as Button).text = "Pause"
+                } else if (!isPaused) {
+                    timerBinder?.pause()
+                    (it as Button).text = "Resume"
+                } else if (isPaused) {
+                    timerBinder?.pause()
+                    (it as Button).text = "Pause"
+
+                }
+            }
         }
         
         findViewById<Button>(R.id.stopButton).setOnClickListener {

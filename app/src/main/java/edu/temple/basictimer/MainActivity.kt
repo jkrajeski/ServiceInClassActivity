@@ -4,11 +4,15 @@ import android.app.Service
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.drawable.Icon
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -55,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             serviceConnection,
             BIND_AUTO_CREATE
         )
-
+        /*
         //Start button
         //changes state and text for green button
         findViewById<Button>(R.id.startButton).setOnClickListener {
@@ -79,5 +83,29 @@ class MainActivity : AppCompatActivity() {
             timerBinder?.stop()
             findViewById<Button>(R.id.startButton).text = "Start"
         }
+        */
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.main, menu)
+
+        return super.onCreateOptionsMenu(menu)
+
+    }
+
+    override fun onOptionsItemSelected (
+        item: MenuItem
+    ) = when(item.itemId){
+            R.id.start_icon -> {
+                timerBinder?.start(100)
+
+            true
+            }
+            R.id.stop_icon -> {
+                timerBinder?.stop()
+                true
+            }
+        else -> false
     }
 }
